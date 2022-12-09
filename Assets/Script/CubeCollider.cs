@@ -7,9 +7,9 @@ public class CubeCollider : MonoBehaviour
     public List<GameObject> cubes = new List<GameObject>();
     private GameObject lastBlock;
 
-    //private float yOffset = 0.18f;
-    //private float zOffset = 3.4f;
-    private float cubeOffset = 0.54f;
+    [SerializeField] private float yOffset = 0.7f;
+    [SerializeField] private float zOffset = -1.12f;
+    [SerializeField] private float cubeOffset = 0.54f;
 
 
 
@@ -35,7 +35,7 @@ public class CubeCollider : MonoBehaviour
 
     void PositionOfCube(GameObject gameObject)
     {
-        gameObject.transform.localPosition = new Vector3(0, 0.7f, -1.12f);
+        gameObject.transform.localPosition = new Vector3(0, yOffset , zOffset);
 
         for (int i = 0; i < cubes.Count; i++)
         {
