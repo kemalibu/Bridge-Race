@@ -1,36 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.AI;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private float turnSpeed = 100f;
-    [SerializeField] private float moveSpeed = 5f;
-
-    float verticalValue;
-
-    private int steerValue;
+    public Camera cam;
+    public NavMeshAgent agent;
 
     private void FixedUpdate()
     {
-        MovementController();
-    }
+        if(Input.GetMouseButton(0))
+        {
+            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
 
-
-    private void MovementController()
-    {
-        transform.Translate(Vector3.forward * verticalValue * moveSpeed * Time.fixedDeltaTime);
-        transform.Rotate(0f, steerValue * turnSpeed * Time.fixedDeltaTime, 0f);
-    }
-
-    public void VerticalValue(int value)
-    {
-        verticalValue = value;
-    }
-
-    public void SteerValue(int value)
-    {
-        steerValue = value;
+            if(Physics.Raycast(ray,out hit))
+            {
+                agent.SetDestination(hit.point);
+            }
+        }
     }
 }
