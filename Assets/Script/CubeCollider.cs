@@ -1,57 +1,41 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class CubeCollider : MonoBehaviour
 {
     public List<GameObject> cubes = new List<GameObject>();
-    private GameObject lastBlock;
 
-    [SerializeField] private float yOffset = 0.7f;
+    [SerializeField] private float yOffset = 0.6f;
     [SerializeField] private float zOffset = -1.12f;
-    [SerializeField] private float cubeOffset = 0.54f;
-
-
+    [SerializeField][Range(0f, 5f)] float durationTime = 1f;
 
     private void OnTriggerEnter(Collider other)
     {
         if(other.tag == "PlayerCube")
         {
             CollectCubePlayer(other.gameObject);
-            other.GetComponentInParent<BoxCollider>().enabled = false;
         }
     }
 
     private void CollectCubePlayer(GameObject gameObject)
     {
         gameObject.transform.SetParent(transform);
-
-        PositionOfCube(gameObject);
-
-        gameObject.transform.tag = "Player";
         cubes.Add(gameObject);
-        LastBlockUpdate();
+        gameObject.transform.tag = "Player";
+        PositionOfCube(gameObject);
     }
 
     void PositionOfCube(GameObject gameObject)
     {
-        gameObject.transform.localPosition = new Vector3(0, yOffset , zOffset);
-
         for (int i = 0; i < cubes.Count; i++)
         {
-            cubes[i].transform.localPosition = new Vector3(cubes[i].transform.localPosition.x,
-                                            cubes[i].transform.localPosition.y + cubeOffset,
-                                            cubes[i].transform.localPosition.z);
-
-          
+            Vector3 targetPos = new Vector3(0, (i + 1) * yOffset, zOffset);
+            gameObject.transform.DOLocalMove(targetPos, durationTime, snapping: false);
         }
 
         Quaternion objectRotation = transform.rotation;
         gameObject.transform.rotation = objectRotation;
-    }
-
-    private void LastBlockUpdate()
-    {
-        lastBlock = cubes[cubes.Count - 1];
     }
 }
