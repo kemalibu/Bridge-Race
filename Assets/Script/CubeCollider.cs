@@ -5,17 +5,26 @@ using DG.Tweening;
 
 public class CubeCollider : MonoBehaviour
 {
-    public List<GameObject> cubes = new List<GameObject>();
-
     [SerializeField] private float yOffset = 0.6f;
     [SerializeField] private float zOffset = -1.12f;
-    [SerializeField][Range(0f, 5f)] float durationTime = 1f;
+    [SerializeField][Range(0f, 5f)] float durationTime = 0.5f;
+    [SerializeField] private float jumpPower = 5.0f;
+    [SerializeField] private int numJumps = 1;
 
+    public List<GameObject> cubes = new List<GameObject>();
+
+   
     private void OnTriggerEnter(Collider other)
     {
-        if(other.tag == "PlayerCube")
+        if (other.tag == "BlueCube" && gameObject.tag == "Player")
         {
             CollectCubePlayer(other.gameObject);
+        }
+
+        else if (other.tag == "RedCube" && gameObject.tag == "RedPlayer")
+        {
+            CollectCubePlayer(other.gameObject);
+            other.tag = gameObject.tag;
         }
     }
 
@@ -32,10 +41,8 @@ public class CubeCollider : MonoBehaviour
         for (int i = 0; i < cubes.Count; i++)
         {
             Vector3 targetPos = new Vector3(0, (i + 1) * yOffset, zOffset);
-            gameObject.transform.DOLocalMove(targetPos, durationTime, snapping: false);
+            gameObject.transform.DOLocalJump(targetPos, jumpPower, numJumps, durationTime);
         }
-
-        Quaternion objectRotation = transform.rotation;
-        gameObject.transform.rotation = objectRotation;
+        gameObject.transform.localRotation = Quaternion.identity;
     }
 }

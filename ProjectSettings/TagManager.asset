@@ -4,7 +4,14 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - PlayerCube
+  - BlueCube
+  - RedCube
+  - PurpleCube
+  - GreenCube
+  - RedPlayer
+  - Destination
+  - Purple Player
+  - Green Player
   layers:
   - Default
   - TransparentFX
