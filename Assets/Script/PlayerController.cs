@@ -2,45 +2,49 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.AI;
 
+[RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour
 {
-    public Camera cam;
-    public NavMeshAgent agent;
-    private Animator animator;
+    [SerializeField] private Rigidbody rb;
+    [SerializeField] private FixedJoystick joystick;
+    [SerializeField] private Animator animator;
 
-    private bool running;
+    [SerializeField] private float moveSpeed = 1f;
+    [SerializeField] private float turnSmoothTime = 0.1f;
 
-    private void Start()
-    {
-        animator = GetComponent<Animator>();
-    }
+    private float turnSmoothVelocity;
 
     private void FixedUpdate()
     {
-        if (Input.GetMouseButton(0))
-        {
-            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
+        rb.velocity = new Vector3(joystick.Horizontal * moveSpeed,
+                                   rb.velocity.y, joystick.Vertical * moveSpeed);
 
 
-            if (Physics.Raycast(ray, out hit))
-            {
-                running = true;
-                agent.SetDestination(hit.point);
-            }
+        if(joystick.Horizontal != 0 || joystick.Vertical != 0)
+        {   
+            float targetAngle = Mathf.Atan2(rb.velocity.x, rb.velocity.z) * Mathf.Rad2Deg;
+            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
+            transform.rotation = Quaternion.Euler(0, angle, 0);
+
+            animator.SetBool("isRunning", true);
         }
 
-        if (agent.remainingDistance <= agent.stoppingDistance)
+        else
         {
-            running = false;
+            animator.SetBool("isRunning", false);
+        }
+    }
+
+    private void OnCollisionStay(Collision other)
+    {
+        if(other.gameObject.tag == "HiddenStair")
+        {
+            moveSpeed = 1.5f;
         }
         else
         {
-            running = true;
+            moveSpeed = 1f;
         }
-
-        animator.SetBool("isRunning", running);
     }
 }

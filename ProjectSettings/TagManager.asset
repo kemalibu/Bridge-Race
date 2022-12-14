@@ -10,8 +10,10 @@ TagManager:
   - GreenCube
   - RedPlayer
   - Destination
-  - Purple Player
-  - Green Player
+  - GreenPlayer
+  - Stair
+  - HiddenStair
+  - YellowPlayer
   layers:
   - Default
   - TransparentFX

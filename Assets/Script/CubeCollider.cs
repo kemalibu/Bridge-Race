@@ -13,7 +13,7 @@ public class CubeCollider : MonoBehaviour
 
     public List<GameObject> cubes = new List<GameObject>();
 
-   
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.tag == "BlueCube" && gameObject.tag == "Player")
@@ -26,13 +26,39 @@ public class CubeCollider : MonoBehaviour
             CollectCubePlayer(other.gameObject);
             other.tag = gameObject.tag;
         }
+
+        else if (other.tag == "PurpleCube" && gameObject.tag == "PurplePlayer")
+        {
+            CollectCubePlayer(other.gameObject);
+            other.tag = gameObject.tag;
+        }
+
+        else if (other.tag == "GreenCube" && gameObject.tag == "GreenPlayer")
+        {
+            CollectCubePlayer(other.gameObject);
+            other.tag = gameObject.tag;
+        }
+
+      
+    }
+
+    private void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject.tag == "Stair")
+        {
+            DeliverCube(other.gameObject);
+            if (gameObject.tag == "Player")
+            {   
+                other.gameObject.GetComponent<MeshRenderer>().material.color = Color.blue;
+            }
+
+        }
     }
 
     private void CollectCubePlayer(GameObject gameObject)
     {
         gameObject.transform.SetParent(transform);
         cubes.Add(gameObject);
-        gameObject.transform.tag = "Player";
         PositionOfCube(gameObject);
     }
 
@@ -44,5 +70,18 @@ public class CubeCollider : MonoBehaviour
             gameObject.transform.DOLocalJump(targetPos, jumpPower, numJumps, durationTime);
         }
         gameObject.transform.localRotation = Quaternion.identity;
+    }
+
+    private void DeliverCube(GameObject gameObject)
+    {  
+        if(cubes.Count > 0 )
+        {   
+            gameObject.SetActive(true);
+            gameObject.GetComponent<BoxCollider>().isTrigger = true;
+            gameObject.GetComponent<MeshRenderer>().enabled = true;
+
+            Destroy(cubes[cubes.Count - 1]);
+            cubes.RemoveAt(cubes.Count - 1);
+        }
     }
 }

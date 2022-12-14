@@ -5,11 +5,11 @@ using UnityEngine;
 
 public class FindClosestCube : MonoBehaviour
 {
-    public GameObject FindClosestTarget(string trgt)
+    public GameObject FindClosestTarget(string target)
     {
         Vector3 position = transform.position;
-        return GameObject.FindGameObjectsWithTag(trgt)
-            .OrderBy(o => (o.transform.position - position).sqrMagnitude)
+        return GameObject.FindGameObjectsWithTag(target)
+            .OrderBy(t => (t.transform.position - position).sqrMagnitude)
             .FirstOrDefault();
     }
 
