@@ -27,7 +27,7 @@ public class CubeCollider : MonoBehaviour
             other.tag = gameObject.tag;
         }
 
-        else if (other.tag == "PurpleCube" && gameObject.tag == "PurplePlayer")
+        else if (other.tag == "YellowCube" && gameObject.tag == "YellowPlayer")
         {
             CollectCubePlayer(other.gameObject);
             other.tag = gameObject.tag;
@@ -50,6 +50,21 @@ public class CubeCollider : MonoBehaviour
             if (gameObject.tag == "Player")
             {   
                 other.gameObject.GetComponent<MeshRenderer>().material.color = Color.blue;
+            }
+
+            else if(gameObject.tag == "RedPlayer")
+            {
+                other.gameObject.GetComponent<MeshRenderer>().material.color = Color.red;
+            }
+
+            else if (gameObject.tag == "YellowPlayer")
+            {
+                other.gameObject.GetComponent<MeshRenderer>().material.color = Color.yellow;
+            }
+
+            else if (gameObject.tag == "GreenPlayer")
+            {
+                other.gameObject.GetComponent<MeshRenderer>().material.color = Color.green;
             }
 
         }
