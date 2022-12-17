@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -42,6 +41,7 @@ public class PlayerController : MonoBehaviour
         {
             moveSpeed = 1.5f;
         }
+
         else
         {
             moveSpeed = 1f;

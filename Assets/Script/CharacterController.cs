@@ -1,21 +1,26 @@
 using UnityEngine.AI;
 using UnityEngine;
 
+
 public class CharacterController : MonoBehaviour
-{
-    [SerializeField] private GameObject destination;
-    [SerializeField] private int randomValue;
-    [SerializeField] private bool changeOfSuccess;
+{ 
+    [SerializeField] private GameObject topDestination;
 
-
+    
     private FindClosestCube targetCube;
     public NavMeshAgent agent;
     private Animator animator;
     private CubeCollider cubeCollider;
- 
-    private bool running;
+
+    private int randomValue;
+    private float coordinateX;
+
+    private bool isPicking = true;
+    private bool isArrived = false;
 
     
+
+
 
     // Start is called before the first frame update
     void Start()
@@ -24,41 +29,95 @@ public class CharacterController : MonoBehaviour
         cubeCollider = GetComponent<CubeCollider>();
         targetCube = GetComponent<FindClosestCube>();
         randomValue = Random.Range(5, 10);
+        FindRandomXPoint();
     }
 
 
     private void FixedUpdate()
-    {  
-        if(gameObject.tag == "RedPlayer" && cubeCollider.cubes.Count < randomValue)
+    {
+        if (isArrived)
         {
-            agent.SetDestination(targetCube.FindClosestTarget("RedCube").transform.position);
-            animator.SetBool("isRunning", true);
+            agent.SetDestination(topDestination.transform.position);
         }
 
-        else if (gameObject.tag == "PurplePlayer" && cubeCollider.cubes.Count < randomValue)
-        {
-            agent.SetDestination(targetCube.FindClosestTarget("PurpleCube").transform.position);
-            animator.SetBool("isRunning", true);
-        }
 
-        else if (gameObject.tag == "GreenPlayer" && cubeCollider.cubes.Count < randomValue)
+        else if (isPicking && !isArrived)
         {
-            agent.SetDestination(targetCube.FindClosestTarget("GreenCube").transform.position);
-            animator.SetBool("isRunning", true);
-        }
+            if (gameObject.tag == "RedPlayer" && cubeCollider.CounterForCubeCount < randomValue)
+            {
+                agent.SetDestination(targetCube.FindClosestTarget("RedCube").transform.position);
+                animator.SetBool("isRunning", true);
+            }
 
-        else
-        {
-            agent.SetDestination(destination.transform.position);
-            animator.SetBool("isRunning", true);
+            else if (gameObject.tag == "YellowPlayer" && cubeCollider.CounterForCubeCount < randomValue)
+            {
+                agent.SetDestination(targetCube.FindClosestTarget("YellowCube").transform.position);
+                animator.SetBool("isRunning", true);
+            }
+
+            else if (gameObject.tag == "GreenPlayer" && cubeCollider.CounterForCubeCount < randomValue)
+            {
+                agent.SetDestination(targetCube.FindClosestTarget("GreenCube").transform.position);
+                animator.SetBool("isRunning", true);
+            }
+
+            else
+            {
+                isPicking = false;    
+            }
+        }
+       
+
+        else if(!isPicking && !isArrived)
+        {   
+            if(cubeCollider.CounterForCubeCount > 0)
+            {
+                Vector3 destination = new Vector3(coordinateX,
+                                       0.525f + (cubeCollider.CounterForPosition * 0.05f),
+                                       5.05f + (cubeCollider.CounterForPosition * 0.1f));
+                agent.SetDestination(destination);
+                animator.SetBool("isRunning", true);
+
+            }
+           
+
+            else
+            {
+                isPicking = true;
+            }
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void FindRandomXPoint()
     {
-        if(other.tag == "Destination")
+        int randomX = Random.Range(0, 4);
+       
+        if(randomX == 0)
         {
-            changeOfSuccess = false;
+            coordinateX = -2.4f;
+        }
+
+        else if(randomX == 1)
+        {
+            coordinateX = -1.2f;
+        }
+
+        else if (randomX == 2)
+        {
+            coordinateX = 0f;
+        }
+
+        else if (randomX == 3)
+        {
+            coordinateX = 1.2f;
+        }     
+    }
+
+    private void OnCollisionEnter(Collision other)
+    {
+        if(other.gameObject.tag == "Ground1")
+        {
+            isArrived = true;
         }
     }
 }

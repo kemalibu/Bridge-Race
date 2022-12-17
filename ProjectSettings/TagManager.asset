@@ -6,7 +6,6 @@ TagManager:
   tags:
   - BlueCube
   - RedCube
-  - PurpleCube
   - GreenCube
   - RedPlayer
   - Destination
@@ -14,6 +13,8 @@ TagManager:
   - Stair
   - HiddenStair
   - YellowPlayer
+  - YellowCube
+  - Ground1
   layers:
   - Default
   - TransparentFX

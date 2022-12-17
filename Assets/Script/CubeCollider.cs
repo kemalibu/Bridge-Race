@@ -11,7 +11,18 @@ public class CubeCollider : MonoBehaviour
     [SerializeField] private float jumpPower = 5.0f;
     [SerializeField] private int numJumps = 1;
 
+    public bool isCollected = false;
+
     public List<GameObject> cubes = new List<GameObject>();
+
+    private int counterForPosition = 0;
+    public int CounterForPosition { get { return counterForPosition; } }
+
+    private int counterForCubeCount = 0;
+
+    public int CounterForCubeCount { get { return counterForCubeCount; } }
+
+    
 
 
     private void OnTriggerEnter(Collider other)
@@ -39,34 +50,17 @@ public class CubeCollider : MonoBehaviour
             other.tag = gameObject.tag;
         }
 
-      
+        else if (other.gameObject.tag == "Stair")
+        {
+            DeliverCube(other.gameObject);
+        }
     }
 
     private void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.tag == "Stair")
+        if(other.gameObject.tag == "Stair")
         {
             DeliverCube(other.gameObject);
-            if (gameObject.tag == "Player")
-            {   
-                other.gameObject.GetComponent<MeshRenderer>().material.color = Color.blue;
-            }
-
-            else if(gameObject.tag == "RedPlayer")
-            {
-                other.gameObject.GetComponent<MeshRenderer>().material.color = Color.red;
-            }
-
-            else if (gameObject.tag == "YellowPlayer")
-            {
-                other.gameObject.GetComponent<MeshRenderer>().material.color = Color.yellow;
-            }
-
-            else if (gameObject.tag == "GreenPlayer")
-            {
-                other.gameObject.GetComponent<MeshRenderer>().material.color = Color.green;
-            }
-
         }
     }
 
@@ -75,6 +69,9 @@ public class CubeCollider : MonoBehaviour
         gameObject.transform.SetParent(transform);
         cubes.Add(gameObject);
         PositionOfCube(gameObject);
+        counterForPosition++;
+        counterForCubeCount++;
+        isCollected = true;
     }
 
     void PositionOfCube(GameObject gameObject)
@@ -89,14 +86,27 @@ public class CubeCollider : MonoBehaviour
 
     private void DeliverCube(GameObject gameObject)
     {  
-        if(cubes.Count > 0 )
+        if(cubes.Count > 0)
         {   
-            gameObject.SetActive(true);
-            gameObject.GetComponent<BoxCollider>().isTrigger = true;
             gameObject.GetComponent<MeshRenderer>().enabled = true;
+            gameObject.GetComponent<BoxCollider>().isTrigger = true;
 
-            Destroy(cubes[cubes.Count - 1]);
-            cubes.RemoveAt(cubes.Count - 1);
+
+            if (gameObject.GetComponent<MeshRenderer>().material.color !=
+                    this.gameObject.GetComponentInChildren<SkinnedMeshRenderer>().material.color)
+            {
+                Destroy(cubes[cubes.Count - 1]);
+                cubes.RemoveAt(cubes.Count - 1);
+
+                gameObject.GetComponent<MeshRenderer>().material.color =
+                            this.gameObject.GetComponentInChildren<SkinnedMeshRenderer>().material.color;
+            }
+            
+        }
+
+        else
+        {
+            counterForCubeCount = 0;
         }
     }
 }
